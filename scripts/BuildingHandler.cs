@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 public partial class BuildingHandler : TileMap {
+	public bool flip;
+
 	[ExportGroup("Layers")]
 	[Export(PropertyHint.Range, "0,100,")] public int terrainLayer = 0;
 	[Export(PropertyHint.Range, "0,100,")] public int buildingsLayer = 1;
@@ -32,6 +34,10 @@ public partial class BuildingHandler : TileMap {
             SetCell(highlightLayer, highlightPos, highlightSource, highlightCoords);
         }
 
+		if (Input.IsActionJustPressed("FlipBuilding")) {
+            flip = !flip;
+        }
+
         if (Input.IsActionJustPressed("SecondaryInteract")) {
             DemolishBuilding(highlightPos);
         }
@@ -55,7 +61,7 @@ public partial class BuildingHandler : TileMap {
         GD.Print("Building placed!");
         GD.Print($"Buildings: {string.Join(",", buildings.Select((building) => building.coords).ToArray())}");
 
-        if (setCell) SetCell(buildingsLayer, highlightPos, building1Source, building1Coords);
+        if (setCell) SetCell(buildingsLayer, highlightPos, building1Source, building1Coords, flip ? 1 : 0);
 
         return true;
     }
