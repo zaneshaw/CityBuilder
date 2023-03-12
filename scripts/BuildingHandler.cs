@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 
 public partial class BuildingHandler : TileMap {
-	public bool flip;
+    public bool flip;
 
-	[ExportGroup("Layers")]
-	[Export(PropertyHint.Range, "0,100,")] public int terrainLayer = 0;
-	[Export(PropertyHint.Range, "0,100,")] public int buildingsLayer = 1;
-	[Export(PropertyHint.Range, "0,100,")] public int highlightLayer = 2;
+    [ExportGroup("Layers")]
+    [Export(PropertyHint.Range, "0,100,")] public int terrainLayer = 0;
+    [Export(PropertyHint.Range, "0,100,")] public int buildingsLayer = 1;
+    [Export(PropertyHint.Range, "0,100,")] public int highlightLayer = 2;
 
-	[ExportGroup("Sources")]
-	[Export(PropertyHint.Range, "0,100,")] public int building1Source = 1;
-	[Export(PropertyHint.Range, "0,100,")] public Vector2I building1Coords = new Vector2I(1, 0);
-	[Export(PropertyHint.Range, "0,100,")] public int highlightSource = 2;
-	[Export(PropertyHint.Range, "0,100,")] public Vector2I highlightCoords = new Vector2I(0, 0);
+    [ExportGroup("Sources")]
+    [Export(PropertyHint.Range, "0,100,")] public int building1Source = 1;
+    [Export(PropertyHint.Range, "0,100,")] public Vector2I building1Coords = new Vector2I(1, 0);
+    [Export(PropertyHint.Range, "0,100,")] public int highlightSource = 2;
+    [Export(PropertyHint.Range, "0,100,")] public Vector2I highlightCoords = new Vector2I(0, 0);
 
     private Vector2I highlightPos;
     private List<Building> buildings = new List<Building>();
@@ -34,7 +34,7 @@ public partial class BuildingHandler : TileMap {
             SetCell(highlightLayer, highlightPos, highlightSource, highlightCoords);
         }
 
-		if (Input.IsActionJustPressed("FlipBuilding")) {
+        if (Input.IsActionJustPressed("FlipBuilding")) {
             flip = !flip;
         }
 
@@ -51,7 +51,7 @@ public partial class BuildingHandler : TileMap {
     /// True if the building was placed
     /// </returns>
     private bool PlaceBuilding(Vector2I coords, bool setCell = true) {
-        if (GetCellSourceId(terrainLayer, coords) == -1 || buildings.Exists((building) => building.coords == coords)) {
+        if (IsTerrainTile(coords) || IsBuilding(coords)) {
             return false;
         }
 
@@ -59,7 +59,6 @@ public partial class BuildingHandler : TileMap {
 
         buildings.Add(building);
         GD.Print("Building placed!");
-        GD.Print($"Buildings: {string.Join(",", buildings.Select((building) => building.coords).ToArray())}");
 
         if (setCell) SetCell(buildingsLayer, highlightPos, building1Source, building1Coords, flip ? 1 : 0);
 
@@ -70,20 +69,26 @@ public partial class BuildingHandler : TileMap {
     /// True if the building was demolished
     /// </returns>
     private bool DemolishBuilding(Vector2I coords) {
-        System.Predicate<Building> predicate = (building) => building.coords == coords;
-        if (!buildings.Exists(predicate)) {
+        if (!IsBuilding(coords)) {
             return false;
         }
 
-        Building building = buildings.Find(predicate);
+        Building building = buildings.Find((building) => building.coords == coords);
 
         buildings.Remove(building);
         GD.Print("Building demolished!");
-        GD.Print($"Buildings: {string.Join(",", buildings.Select((building) => building.coords).ToArray())}");
 
         SetCell(buildingsLayer, highlightPos, -1);
 
         return true;
+    }
+
+    private bool IsTerrainTile(Vector2I coords) {
+        return GetCellSourceId(terrainLayer, coords) == -1;
+    }
+
+    private bool IsBuilding(Vector2I coords) {
+        return buildings.Exists((building) => building.coords == coords);
     }
 
     public class Building {
