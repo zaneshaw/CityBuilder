@@ -22,12 +22,13 @@ texture_region_size = Vector2i(32, 32)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_liq0g"]
 texture = ExtResource("3_d6tql")
-texture_region_size = Vector2i(32, 16)
+texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
+0:0/0/texture_origin = Vector2i(0, 8)
 
 [resource]
 tile_shape = 1
 tile_size = Vector2i(32, 16)
 sources/0 = SubResource("TileSetAtlasSource_146dg")
 sources/1 = SubResource("TileSetAtlasSource_p4gj0")
-sources/3 = SubResource("TileSetAtlasSource_liq0g")
+sources/2 = SubResource("TileSetAtlasSource_liq0g")
