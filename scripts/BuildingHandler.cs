@@ -11,12 +11,13 @@ public partial class BuildingHandler : TileMap {
     [Export(PropertyHint.Range, "0,100,")] public int highlightLayer = 2;
 
     [ExportGroup("Sources")]
-    [Export(PropertyHint.Range, "0,100,")] public int building1Source = 1;
-    [Export(PropertyHint.Range, "0,100,")] public Vector2I building1Coords = new Vector2I(1, 0);
-    [Export(PropertyHint.Range, "0,100,")] public int highlightSource = 2;
-    [Export(PropertyHint.Range, "0,100,")] public Vector2I highlightCoords = new Vector2I(0, 0);
+    [Export(PropertyHint.Range, "0,100,")] public int building1TileSource = 1;
+    [Export(PropertyHint.Range, "0,100,")] public Vector2I building1TileCoords = new Vector2I(1, 0);
+    [Export(PropertyHint.Range, "0,100,")] public int highlightTileSource = 2;
+    [Export(PropertyHint.Range, "0,100,")] public Vector2I highlightTileCoords = new Vector2I(0, 0);
 
     private Vector2I highlightPos;
+    private bool noPlace;
     private List<Building> buildings = new List<Building>();
 
     public override void _Ready() {
@@ -26,23 +27,29 @@ public partial class BuildingHandler : TileMap {
     }
 
     public override void _Process(double delta) {
-        Vector2I newTilePos = LocalToMap(GetLocalMousePosition());
+        Vector2I newTileCoords = LocalToMap(GetLocalMousePosition());
 
-        if (newTilePos != highlightPos) {
+		noPlace = false;
+        if (IsTerrainTile(newTileCoords)) {
+            if (newTileCoords != highlightPos) {
+                SetCell(highlightLayer, highlightPos, -1);
+                highlightPos = newTileCoords;
+                SetCell(highlightLayer, highlightPos, building1TileSource, building1TileCoords);
+            }
+        } else {
+			noPlace = true;
             SetCell(highlightLayer, highlightPos, -1);
-            highlightPos = newTilePos;
-            SetCell(highlightLayer, highlightPos, highlightSource, highlightCoords);
         }
 
         if (Input.IsActionJustPressed("FlipBuilding")) {
             flip = !flip;
         }
 
-        if (Input.IsActionJustPressed("SecondaryInteract")) {
+        if (Input.IsActionJustPressed("SecondaryInteract") && !noPlace) {
             DemolishBuilding(highlightPos);
         }
 
-        if (Input.IsActionJustPressed("PrimaryInteract")) {
+        if (Input.IsActionJustPressed("PrimaryInteract") && !noPlace) {
             PlaceBuilding(highlightPos);
         }
     }
@@ -51,7 +58,7 @@ public partial class BuildingHandler : TileMap {
     /// True if the building was placed
     /// </returns>
     private bool PlaceBuilding(Vector2I coords, bool setCell = true) {
-        if (IsTerrainTile(coords) || IsBuilding(coords)) {
+        if (!IsTerrainTile(coords) || IsBuilding(coords)) {
             return false;
         }
 
@@ -60,7 +67,7 @@ public partial class BuildingHandler : TileMap {
         buildings.Add(building);
         GD.Print("Building placed!");
 
-        if (setCell) SetCell(buildingsLayer, highlightPos, building1Source, building1Coords, flip ? 1 : 0);
+        if (setCell) SetCell(buildingsLayer, highlightPos, building1TileSource, building1TileCoords, flip ? 1 : 0);
 
         return true;
     }
@@ -84,7 +91,7 @@ public partial class BuildingHandler : TileMap {
     }
 
     private bool IsTerrainTile(Vector2I coords) {
-        return GetCellSourceId(terrainLayer, coords) == -1;
+        return GetCellSourceId(terrainLayer, coords) != -1;
     }
 
     private bool IsBuilding(Vector2I coords) {
