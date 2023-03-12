@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://blxb2r067od2h"]
+
+[ext_resource type="TileSet" uid="uid://cveynit0api4m" path="res://tilesets/main.tres" id="1_wh1hj"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="TileMap" type="TileMap" parent="."]
+y_sort_enabled = true
+texture_filter = 1
+tile_set = ExtResource("1_wh1hj")
+format = 2
+layer_0/name = "terrain"
+layer_0/y_sort_enabled = true
+layer_0/tile_data = PackedInt32Array(-131073, 0, 0, -65537, 0, 0, -2, 0, 0, 65535, 0, 0, -1, 0, 0, -131072, 0, 0, -65536, 0, 0, 0, 0, 0, 131071, 0, 0)
+layer_1/name = "buildings"
+layer_1/enabled = true
+layer_1/modulate = Color(1, 1, 1, 1)
+layer_1/y_sort_enabled = true
+layer_1/y_sort_origin = 0
+layer_1/z_index = 1
+layer_1/tile_data = PackedInt32Array(131071, 1, 0, -65536, 262145, 0, -65537, 327681, 0)
