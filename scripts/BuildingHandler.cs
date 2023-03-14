@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 public partial class BuildingHandler : TileMap {
-    public bool flip;
+	// [Export] public BuildingData Stats;
 
     [ExportGroup("Layers")]
     [Export(PropertyHint.Range, "0,100,")] public int terrainLayer = 0;
@@ -16,6 +16,7 @@ public partial class BuildingHandler : TileMap {
     [Export(PropertyHint.Range, "0,100,")] public int highlightTileSource = 2;
     [Export(PropertyHint.Range, "0,100,")] public Vector2I highlightTileCoords = new Vector2I(0, 0);
 
+    private bool flip;
     private Vector2I highlightPos;
     private bool noPlace;
     private List<Building> buildings = new List<Building>();
@@ -62,7 +63,7 @@ public partial class BuildingHandler : TileMap {
             return false;
         }
 
-        Building building = new Building { coords = coords };
+        Building building = new Building { coords = coords, flipped = flip };
 
         buildings.Add(building);
         GD.Print("Building placed!");
@@ -100,5 +101,6 @@ public partial class BuildingHandler : TileMap {
 
     public class Building {
         public Vector2I coords;
+		public bool flipped;
     }
 }

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="BuildingData" load_steps=2 format=3 uid="uid://cvcmfa34owswi"]
+
+[ext_resource type="Script" path="res://scripts/BuildingData.gd" id="1_nj5ko"]
+
+[resource]
+script = ExtResource("1_nj5ko")
+layer = 0
+source = 0
+coords = Vector2i(0, 0)
