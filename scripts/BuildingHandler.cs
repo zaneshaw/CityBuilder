@@ -2,101 +2,114 @@ using Godot;
 using System.Collections.Generic;
 
 public partial class BuildingHandler : TileMap {
-	[Export] public Resource building1;
+    [Export] public Resource building1;
 
-	[ExportGroup("Layers")]
-	[Export(PropertyHint.Range, "0,100,")] public int terrainLayer = 0;
-	[Export(PropertyHint.Range, "0,100,")] public int highlightLayer = 2;
+    [ExportGroup("Layers")]
+    [Export(PropertyHint.Range, "0,100,")] public int terrainLayer = 0;
+    [Export(PropertyHint.Range, "0,100,")] public int highlightLayer = 2;
 
-	[ExportGroup("Sources")]
-	[Export(PropertyHint.Range, "0,100,")] public int highlightTileSource = 2;
-	[Export(PropertyHint.Range, "0,100,")] public Vector2I highlightTileCoords = new Vector2I(0, 0);
+    [ExportGroup("Sources")]
+    [Export(PropertyHint.Range, "0,100,")] public int highlightTileSource = 2;
+    [Export(PropertyHint.Range, "0,100,")] public Vector2I highlightTileCoords = new Vector2I(0, 0);
 
-	private bool flip;
-	private Vector2I highlightPos;
-	private bool noPlace;
-	private List<Building> buildings = new List<Building>();
+    private bool flip;
+    private Vector2I highlightPos;
+    private bool noPlace;
+    private List<Building> buildings = new List<Building>();
+    private BuildingData currentBuilding;
 
-	public override void _Ready() {
-		foreach (var building in GetUsedCells(1)) {
-			PlaceBuilding(building, false);
-		}
-	}
+    public override void _Ready() {
+        currentBuilding = new BuildingData {
+            layer = (int)building1.Get("layer"),
+            source = (int)building1.Get("source"),
+            coords = (Vector2I)building1.Get("coords"),
+        };
 
-	public override void _Process(double delta) {
-		Vector2I newTileCoords = LocalToMap(GetLocalMousePosition());
+        foreach (var building in GetUsedCells(1)) {
+            PlaceBuilding(building, false);
+        }
+    }
 
-		noPlace = false;
-		if (IsTerrainTile(newTileCoords)) {
-			if (newTileCoords != highlightPos) {
-				SetCell(highlightLayer, highlightPos, -1);
-				highlightPos = newTileCoords;
-				SetCell(highlightLayer, highlightPos, ((int)building1.Get("source")), ((Vector2I)building1.Get("coords")));
-			}
-		} else {
-			noPlace = true;
-			SetCell(highlightLayer, highlightPos, -1);
-		}
+    public override void _Process(double delta) {
+        Vector2I newTileCoords = LocalToMap(GetLocalMousePosition());
 
-		if (Input.IsActionJustPressed("FlipBuilding")) {
-			flip = !flip;
-		}
+        noPlace = false;
+        if (IsTerrainTile(newTileCoords)) {
+            if (newTileCoords != highlightPos) {
+                SetCell(highlightLayer, highlightPos, -1);
+                highlightPos = newTileCoords;
+                SetCell(highlightLayer, highlightPos, currentBuilding.source, currentBuilding.coords);
+            }
+        } else {
+            noPlace = true;
+            SetCell(highlightLayer, highlightPos, -1);
+        }
 
-		if (Input.IsActionJustPressed("SecondaryInteract") && !noPlace) {
-			DemolishBuilding(highlightPos);
-		}
+        if (Input.IsActionJustPressed("FlipBuilding")) {
+            flip = !flip;
+        }
 
-		if (Input.IsActionJustPressed("PrimaryInteract") && !noPlace) {
-			PlaceBuilding(highlightPos);
-		}
-	}
+        if (Input.IsActionJustPressed("SecondaryInteract") && !noPlace) {
+            DemolishBuilding(highlightPos);
+        }
 
-	/// <returns>
-	/// True if the building was placed
-	/// </returns>
-	private bool PlaceBuilding(Vector2I coords, bool setCell = true) {
-		if (!IsTerrainTile(coords) || IsBuilding(coords)) {
-			return false;
-		}
+        if (Input.IsActionJustPressed("PrimaryInteract") && !noPlace) {
+            PlaceBuilding(highlightPos);
+        }
+    }
 
-		Building building = new Building { coords = coords, flipped = flip };
+    /// <returns>
+    /// True if the building was placed
+    /// </returns>
+    private bool PlaceBuilding(Vector2I coords, bool setCell = true) {
+        if (!IsTerrainTile(coords) || IsBuilding(coords)) {
+            return false;
+        }
 
-		buildings.Add(building);
-		GD.Print("Building placed!");
+        Building building = new Building { coords = coords, flipped = flip };
 
-		if (setCell) SetCell(((int)building1.Get("layer")), highlightPos, ((int)building1.Get("source")), ((Vector2I)building1.Get("coords")), flip ? 1 : 0);
+        buildings.Add(building);
+        GD.Print("Building placed!");
 
-		return true;
-	}
+        if (setCell) SetCell(currentBuilding.layer, highlightPos, currentBuilding.source, currentBuilding.coords, flip ? 1 : 0);
 
-	/// <returns>
-	/// True if the building was demolished
-	/// </returns>
-	private bool DemolishBuilding(Vector2I coords) {
-		if (!IsBuilding(coords)) {
-			return false;
-		}
+        return true;
+    }
 
-		Building building = buildings.Find((building) => building.coords == coords);
+    /// <returns>
+    /// True if the building was demolished
+    /// </returns>
+    private bool DemolishBuilding(Vector2I coords) {
+        if (!IsBuilding(coords)) {
+            return false;
+        }
 
-		buildings.Remove(building);
-		GD.Print("Building demolished!");
+        Building building = buildings.Find((building) => building.coords == coords);
 
-		SetCell(((int)building1.Get("layer")), highlightPos, -1);
+        buildings.Remove(building);
+        GD.Print("Building demolished!");
 
-		return true;
-	}
+        SetCell(currentBuilding.layer, highlightPos, -1);
 
-	private bool IsTerrainTile(Vector2I coords) {
-		return GetCellSourceId(terrainLayer, coords) != -1;
-	}
+        return true;
+    }
 
-	private bool IsBuilding(Vector2I coords) {
-		return buildings.Exists((building) => building.coords == coords);
-	}
+    private bool IsTerrainTile(Vector2I coords) {
+        return GetCellSourceId(terrainLayer, coords) != -1;
+    }
 
-	public class Building {
-		public Vector2I coords;
-		public bool flipped;
-	}
+    private bool IsBuilding(Vector2I coords) {
+        return buildings.Exists((building) => building.coords == coords);
+    }
+
+    public class Building {
+        public Vector2I coords;
+        public bool flipped;
+    }
+
+    public struct BuildingData {
+        public int layer;
+        public int source;
+        public Vector2I coords;
+    }
 }
