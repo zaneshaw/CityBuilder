@@ -36,9 +36,7 @@ public partial class BuildingHandler : TileMap {
         noPlace = false;
         if (IsTerrainTile(newTileCoords)) {
             if (newTileCoords != highlightPos) {
-                SetCell(highlightLayer, highlightPos, -1);
-                highlightPos = newTileCoords;
-                SetCell(highlightLayer, highlightPos, currentBuilding.source, currentBuilding.coords);
+                UpdateGhost(newTileCoords);
             }
         } else {
             noPlace = true;
@@ -47,6 +45,7 @@ public partial class BuildingHandler : TileMap {
 
         if (Input.IsActionJustPressed("FlipBuilding")) {
             flip = !flip;
+            UpdateGhost(highlightPos);
         }
 
         if (Input.IsActionJustPressed("SecondaryInteract") && !noPlace) {
@@ -92,6 +91,12 @@ public partial class BuildingHandler : TileMap {
         SetCell(currentBuilding.layer, highlightPos, -1);
 
         return true;
+    }
+
+    private void UpdateGhost(Vector2I coords) {
+        SetCell(highlightLayer, highlightPos, -1);
+        highlightPos = coords;
+        SetCell(highlightLayer, highlightPos, currentBuilding.source, currentBuilding.coords, flip ? 1 : 0);
     }
 
     private bool IsTerrainTile(Vector2I coords) {
