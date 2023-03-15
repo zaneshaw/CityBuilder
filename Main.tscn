@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://d1omckc8x0xmd"]
+[gd_scene load_steps=4 format=3 uid="uid://d1omckc8x0xmd"]
 
 [ext_resource type="TileSet" uid="uid://cveynit0api4m" path="res://tilesets/main.tres" id="1_wh1hj"]
 [ext_resource type="Script" path="res://scripts/BuildingHandler.cs" id="2_gapqt"]
+[ext_resource type="Resource" uid="uid://bbybiaut5evhm" path="res://resources/buildings/Building1.tres" id="3_ncn3h"]
 
 [node name="Node2D" type="Node2D"]
 
@@ -29,3 +30,4 @@ layer_2/y_sort_origin = 0
 layer_2/z_index = 1
 layer_2/tile_data = PackedInt32Array()
 script = ExtResource("2_gapqt")
+building1 = ExtResource("3_ncn3h")

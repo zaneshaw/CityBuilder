@@ -1,106 +1,102 @@
 using Godot;
 using System.Collections.Generic;
-using System.Linq;
 
 public partial class BuildingHandler : TileMap {
-	// [Export] public BuildingData Stats;
+	[Export] public Resource building1;
 
-    [ExportGroup("Layers")]
-    [Export(PropertyHint.Range, "0,100,")] public int terrainLayer = 0;
-    [Export(PropertyHint.Range, "0,100,")] public int buildingsLayer = 1;
-    [Export(PropertyHint.Range, "0,100,")] public int highlightLayer = 2;
+	[ExportGroup("Layers")]
+	[Export(PropertyHint.Range, "0,100,")] public int terrainLayer = 0;
+	[Export(PropertyHint.Range, "0,100,")] public int highlightLayer = 2;
 
-    [ExportGroup("Sources")]
-    [Export(PropertyHint.Range, "0,100,")] public int building1TileSource = 1;
-    [Export(PropertyHint.Range, "0,100,")] public Vector2I building1TileCoords = new Vector2I(1, 0);
-    [Export(PropertyHint.Range, "0,100,")] public int highlightTileSource = 2;
-    [Export(PropertyHint.Range, "0,100,")] public Vector2I highlightTileCoords = new Vector2I(0, 0);
+	[ExportGroup("Sources")]
+	[Export(PropertyHint.Range, "0,100,")] public int highlightTileSource = 2;
+	[Export(PropertyHint.Range, "0,100,")] public Vector2I highlightTileCoords = new Vector2I(0, 0);
 
-    private bool flip;
-    private Vector2I highlightPos;
-    private bool noPlace;
-    private List<Building> buildings = new List<Building>();
+	private bool flip;
+	private Vector2I highlightPos;
+	private bool noPlace;
+	private List<Building> buildings = new List<Building>();
 
-    public override void _Ready() {
-        foreach (var building in GetUsedCells(1)) {
-            PlaceBuilding(building, false);
-        }
-    }
+	public override void _Ready() {
+		foreach (var building in GetUsedCells(1)) {
+			PlaceBuilding(building, false);
+		}
+	}
 
-    public override void _Process(double delta) {
-        Vector2I newTileCoords = LocalToMap(GetLocalMousePosition());
+	public override void _Process(double delta) {
+		Vector2I newTileCoords = LocalToMap(GetLocalMousePosition());
 
 		noPlace = false;
-        if (IsTerrainTile(newTileCoords)) {
-            if (newTileCoords != highlightPos) {
-                SetCell(highlightLayer, highlightPos, -1);
-                highlightPos = newTileCoords;
-                SetCell(highlightLayer, highlightPos, building1TileSource, building1TileCoords);
-            }
-        } else {
+		if (IsTerrainTile(newTileCoords)) {
+			if (newTileCoords != highlightPos) {
+				SetCell(highlightLayer, highlightPos, -1);
+				highlightPos = newTileCoords;
+				SetCell(highlightLayer, highlightPos, ((int)building1.Get("source")), ((Vector2I)building1.Get("coords")));
+			}
+		} else {
 			noPlace = true;
-            SetCell(highlightLayer, highlightPos, -1);
-        }
+			SetCell(highlightLayer, highlightPos, -1);
+		}
 
-        if (Input.IsActionJustPressed("FlipBuilding")) {
-            flip = !flip;
-        }
+		if (Input.IsActionJustPressed("FlipBuilding")) {
+			flip = !flip;
+		}
 
-        if (Input.IsActionJustPressed("SecondaryInteract") && !noPlace) {
-            DemolishBuilding(highlightPos);
-        }
+		if (Input.IsActionJustPressed("SecondaryInteract") && !noPlace) {
+			DemolishBuilding(highlightPos);
+		}
 
-        if (Input.IsActionJustPressed("PrimaryInteract") && !noPlace) {
-            PlaceBuilding(highlightPos);
-        }
-    }
+		if (Input.IsActionJustPressed("PrimaryInteract") && !noPlace) {
+			PlaceBuilding(highlightPos);
+		}
+	}
 
-    /// <returns>
-    /// True if the building was placed
-    /// </returns>
-    private bool PlaceBuilding(Vector2I coords, bool setCell = true) {
-        if (!IsTerrainTile(coords) || IsBuilding(coords)) {
-            return false;
-        }
+	/// <returns>
+	/// True if the building was placed
+	/// </returns>
+	private bool PlaceBuilding(Vector2I coords, bool setCell = true) {
+		if (!IsTerrainTile(coords) || IsBuilding(coords)) {
+			return false;
+		}
 
-        Building building = new Building { coords = coords, flipped = flip };
+		Building building = new Building { coords = coords, flipped = flip };
 
-        buildings.Add(building);
-        GD.Print("Building placed!");
+		buildings.Add(building);
+		GD.Print("Building placed!");
 
-        if (setCell) SetCell(buildingsLayer, highlightPos, building1TileSource, building1TileCoords, flip ? 1 : 0);
+		if (setCell) SetCell(((int)building1.Get("layer")), highlightPos, ((int)building1.Get("source")), ((Vector2I)building1.Get("coords")), flip ? 1 : 0);
 
-        return true;
-    }
+		return true;
+	}
 
-    /// <returns>
-    /// True if the building was demolished
-    /// </returns>
-    private bool DemolishBuilding(Vector2I coords) {
-        if (!IsBuilding(coords)) {
-            return false;
-        }
+	/// <returns>
+	/// True if the building was demolished
+	/// </returns>
+	private bool DemolishBuilding(Vector2I coords) {
+		if (!IsBuilding(coords)) {
+			return false;
+		}
 
-        Building building = buildings.Find((building) => building.coords == coords);
+		Building building = buildings.Find((building) => building.coords == coords);
 
-        buildings.Remove(building);
-        GD.Print("Building demolished!");
+		buildings.Remove(building);
+		GD.Print("Building demolished!");
 
-        SetCell(buildingsLayer, highlightPos, -1);
+		SetCell(((int)building1.Get("layer")), highlightPos, -1);
 
-        return true;
-    }
+		return true;
+	}
 
-    private bool IsTerrainTile(Vector2I coords) {
-        return GetCellSourceId(terrainLayer, coords) != -1;
-    }
+	private bool IsTerrainTile(Vector2I coords) {
+		return GetCellSourceId(terrainLayer, coords) != -1;
+	}
 
-    private bool IsBuilding(Vector2I coords) {
-        return buildings.Exists((building) => building.coords == coords);
-    }
+	private bool IsBuilding(Vector2I coords) {
+		return buildings.Exists((building) => building.coords == coords);
+	}
 
-    public class Building {
-        public Vector2I coords;
+	public class Building {
+		public Vector2I coords;
 		public bool flipped;
-    }
+	}
 }
