@@ -9,7 +9,6 @@
 [node name="TileMap" type="TileMap" parent="."]
 y_sort_enabled = true
 texture_filter = 1
-position = Vector2(576, 324)
 tile_set = ExtResource("1_wh1hj")
 format = 2
 layer_0/name = "terrain"
@@ -32,3 +31,5 @@ layer_2/tile_data = PackedInt32Array()
 script = ExtResource("2_gapqt")
 building1 = ExtResource("3_ncn3h")
 mapSize = Vector2i(20, 20)
+
+[node name="Camera2D" type="Camera2D" parent="."]
