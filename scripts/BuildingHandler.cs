@@ -1,8 +1,22 @@
 using Godot;
 using System.Collections.Generic;
 
+[Tool]
 public partial class BuildingHandler : TileMap {
     [Export] public Resource building1;
+
+    [ExportGroup("Generation")]
+    [Export]
+    public bool generateMap {
+        get => false;
+        set {
+            if (value) {
+                GenerateMap();
+            }
+        }
+    }
+    [Export] public Vector2I mapSize;
+
 
     [ExportGroup("Layers")]
     [Export(PropertyHint.Range, "0,100,")] public int terrainLayer = 0;
@@ -19,41 +33,45 @@ public partial class BuildingHandler : TileMap {
     private BuildingData currentBuilding;
 
     public override void _Ready() {
-        currentBuilding = new BuildingData {
-            layer = (int)building1.Get("layer"),
-            source = (int)building1.Get("source"),
-            coords = (Vector2I)building1.Get("coords"),
-        };
+        if (!Engine.IsEditorHint()) {
+            currentBuilding = new BuildingData {
+                layer = (int)building1.Get("layer"),
+                source = (int)building1.Get("source"),
+                coords = (Vector2I)building1.Get("coords"),
+            };
 
-        foreach (var building in GetUsedCells(1)) {
-            PlaceBuilding(building, false);
+            foreach (var building in GetUsedCells(1)) {
+                PlaceBuilding(building, false);
+            }
         }
     }
 
     public override void _Process(double delta) {
-        Vector2I newTileCoords = LocalToMap(GetLocalMousePosition());
+        if (!Engine.IsEditorHint()) {
+            Vector2I newTileCoords = LocalToMap(GetLocalMousePosition());
 
-        noPlace = false;
-        if (IsTerrainTile(newTileCoords)) {
-            if (newTileCoords != highlightPos) {
-                UpdateGhost(newTileCoords);
+            noPlace = false;
+            if (IsTerrainTile(newTileCoords)) {
+                if (newTileCoords != highlightPos) {
+                    UpdateGhost(newTileCoords);
+                }
+            } else {
+                noPlace = true;
+                SetCell(highlightLayer, highlightPos, -1);
             }
-        } else {
-            noPlace = true;
-            SetCell(highlightLayer, highlightPos, -1);
-        }
 
-        if (Input.IsActionJustPressed("FlipBuilding")) {
-            flip = !flip;
-            UpdateGhost(highlightPos);
-        }
+            if (Input.IsActionJustPressed("FlipBuilding")) {
+                flip = !flip;
+                UpdateGhost(highlightPos);
+            }
 
-        if (Input.IsActionJustPressed("SecondaryInteract") && !noPlace) {
-            DemolishBuilding(highlightPos);
-        }
+            if (Input.IsActionJustPressed("SecondaryInteract") && !noPlace) {
+                DemolishBuilding(highlightPos);
+            }
 
-        if (Input.IsActionJustPressed("PrimaryInteract") && !noPlace) {
-            PlaceBuilding(highlightPos);
+            if (Input.IsActionJustPressed("PrimaryInteract") && !noPlace) {
+                PlaceBuilding(highlightPos);
+            }
         }
     }
 
@@ -97,6 +115,20 @@ public partial class BuildingHandler : TileMap {
         SetCell(highlightLayer, highlightPos, -1);
         highlightPos = coords;
         SetCell(highlightLayer, highlightPos, currentBuilding.source, currentBuilding.coords, flip ? 1 : 0);
+    }
+
+    private void GenerateMap() {
+        ClearLayer(terrainLayer);
+
+        Vector2I offset = new Vector2I(-(Mathf.FloorToInt((Mathf.Floor(mapSize.X) / 2f - Mathf.Floor(mapSize.Y / 2f)) * 0.5f)), -(Mathf.FloorToInt((Mathf.Floor(mapSize.X) / 2f + Mathf.Floor(mapSize.Y / 2f) + 2) * 1f)));
+
+        for (int y = 0; y < mapSize.Y; y++) {
+            for (int x = 0; x < mapSize.X; x++) {
+                int isoX = Mathf.FloorToInt((x - y - 1) * 0.5f);
+                int isoY = Mathf.FloorToInt((x + y + 1) * 1f);
+                SetCell(terrainLayer, new Vector2I(isoX, isoY) + offset, 0, new Vector2I(0, 0));
+            }
+        }
     }
 
     private bool IsTerrainTile(Vector2I coords) {
