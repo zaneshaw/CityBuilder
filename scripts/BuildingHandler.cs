@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 [Tool]
 public partial class BuildingHandler : TileMap {
-    [Export] public Resource building1;
+    [Export] public Godot.Collections.Array<Resource> buildingList;
 
     [ExportGroup("Generation")]
     [Export]
@@ -16,7 +16,6 @@ public partial class BuildingHandler : TileMap {
         }
     }
     [Export] public Vector2I mapSize;
-    [Export] public int testa;
 
     [ExportGroup("Layers")]
     [Export(PropertyHint.Range, "0,100,")] public int terrainLayer = 0;
@@ -35,9 +34,9 @@ public partial class BuildingHandler : TileMap {
     public override void _Ready() {
         if (!Engine.IsEditorHint()) {
             currentBuilding = new BuildingData {
-                layer = (int)building1.Get("layer"),
-                source = (int)building1.Get("source"),
-                coords = (Vector2I)building1.Get("coords"),
+                layer = (int)buildingList[1].Get("layer"),
+                source = (int)buildingList[1].Get("source"),
+                coords = (Vector2I)buildingList[1].Get("coords"),
             };
 
             foreach (var building in GetUsedCells(1)) {
