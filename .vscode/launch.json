@@ -13,9 +13,7 @@
 			"request": "launch",
 			"mode": "executable",
 			"preLaunchTask": "build",
-			"executable": "<insert-godot-executable-path-here>",
-			// See which arguments are available here:
-			// https://docs.godotengine.org/en/stable/getting_started/editor/command_line_tutorial.html
+			"executable": "C:\\Godot\\Godot_v4.0-stable_mono_win64.exe",
 			"executableArguments": [
 				"--path",
 				"${workspaceRoot}"
@@ -27,9 +25,7 @@
 			"request": "launch",
 			"mode": "executable",
 			"preLaunchTask": "build",
-			"executable": "<insert-godot-executable-path-here>",
-			// See which arguments are available here:
-			// https://docs.godotengine.org/en/stable/getting_started/editor/command_line_tutorial.html
+			"executable": "C:\\Godot\\Godot_v4.0-stable_mono_win64.exe",
 			"executableArguments": [
 				"--path",
 				"${workspaceRoot}",
