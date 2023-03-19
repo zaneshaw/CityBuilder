@@ -16,6 +16,7 @@ public partial class BuildingHandler : TileMap {
         }
     }
     [Export] public Vector2I mapSize;
+    [Export] public int noiseReduce = 1;
 
     [ExportGroup("Layers")]
     [Export(PropertyHint.Range, "0,100,")] public int terrainLayer = 0;
@@ -119,11 +120,23 @@ public partial class BuildingHandler : TileMap {
     private void GenerateMap() {
         ClearLayer(terrainLayer);
 
+        FastNoiseLite noise = new FastNoiseLite();
+        GD.Randomize();
+        noise.NoiseType = FastNoiseLite.NoiseTypeEnum.Simplex;
+        noise.Seed = (int)GD.Randi();
+        noise.FractalOctaves = 4;
+        noise.FractalLacunarity = 1.5f;
+
         for (float y = 0f - mapSize.Y / 2f; y < mapSize.Y / 2f; y++) {
             for (float x = 0f - mapSize.X / 2f; x < mapSize.X / 2f; x++) {
                 int isoX = Mathf.FloorToInt((x - y - 1) * 0.5f);
                 int isoY = Mathf.FloorToInt((x + y + (mapSize.Y % 2 == 1 ? 0 : 1)) * 1f);
-                SetCell(terrainLayer, new Vector2I(isoX, isoY), 0, new Vector2I(0, 0));
+
+                float noiseValue = (noise.GetNoise2D(x * noiseReduce, y * noiseReduce) + 1) / 2f;
+                int spriteIndex = Mathf.RoundToInt(noiseValue * (7 + 1)) - 1;
+                GD.Print(spriteIndex);
+
+                SetCell(terrainLayer, new Vector2I(isoX, isoY), 0, new Vector2I(spriteIndex, 0));
             }
         }
     }
