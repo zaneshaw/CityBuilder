@@ -3,7 +3,7 @@
 	"tasks": [
 		{
 			"label": "build",
-			"command": "<insert-godot-executable-path-here>",
+			"command": "C:\\Godot\\Godot_v4.0-stable_mono_win64.exe",
 			"type": "process",
 			"args": [
 				"--build-solutions",
