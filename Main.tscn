@@ -36,6 +36,7 @@ buildingList = Array[Resource]([ExtResource("3_ncn3h"), ExtResource("4_yt4s6")])
 
 [node name="TerrainTileMap" type="TileMap" parent="."]
 y_sort_enabled = true
+texture_filter = 1
 tile_set = ExtResource("1_wh1hj")
 format = 2
 layer_0/y_sort_enabled = true
