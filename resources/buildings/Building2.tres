@@ -4,6 +4,6 @@
 
 [resource]
 script = ExtResource("1_f3myh")
-layer = 1
+layer = 0
 source = 1
 coords = Vector2i(0, 0)
