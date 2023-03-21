@@ -15,19 +15,18 @@ public partial class TerrainGenerator : TileMap {
     [Export] public Vector2I mapSize;
     [Export] public int noiseReduce = 1;
     [Export] public Gradient gradientTest;
+    [Export] public int octaves = 5;
+    [Export] public float lacunarity = 1f;
 
     private void GenerateMap() {
         Clear();
 
         FastNoiseLite noise = new FastNoiseLite();
-        RandomNumberGenerator RNG = new RandomNumberGenerator();
-        RNG.Seed = 14491333777330041329;
-        GD.Print(RNG.Seed);
 
         noise.NoiseType = FastNoiseLite.NoiseTypeEnum.Simplex;
-        noise.Seed = (int)GD.Randi();
-        noise.FractalOctaves = 4;
-        noise.FractalLacunarity = 1.5f;
+        noise.Seed = 1;
+        noise.FractalOctaves = octaves;
+        noise.FractalLacunarity = lacunarity;
 
         int maxElevation = gradientTest.GetPointCount();
         for (float y = 0f - mapSize.Y / 2f; y < mapSize.Y / 2f; y++) {
