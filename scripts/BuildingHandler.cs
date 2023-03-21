@@ -6,7 +6,7 @@ public partial class BuildingHandler : TileMap {
 
     [ExportGroup("Layers")]
     [Export(PropertyHint.Range, "0,100,")] public int terrainLayer = 0;
-    [Export(PropertyHint.Range, "0,100,")] public int highlightLayer = 2;
+    [Export(PropertyHint.Range, "0,100,")] public int highlightLayer = 1;
 
     [ExportGroup("Sources")]
     [Export(PropertyHint.Range, "0,100,")] public int highlightTileSource = 2;
