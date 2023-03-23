@@ -2,11 +2,8 @@ using Godot;
 using System.Collections.Generic;
 
 public partial class BuildingHandler : TileMap {
+    [Export] public TerrainGenerator terrain;
     [Export] public Godot.Collections.Array<Resource> buildingList;
-
-    [ExportGroup("Layers")]
-    [Export(PropertyHint.Range, "0,100,")] public int terrainLayer = 0;
-    [Export(PropertyHint.Range, "0,100,")] public int highlightLayer = 1;
 
     [ExportGroup("Sources")]
     [Export(PropertyHint.Range, "0,100,")] public int highlightTileSource = 2;
@@ -14,50 +11,46 @@ public partial class BuildingHandler : TileMap {
 
     private bool flip;
     private Vector2I highlightPos;
+    private int highlightZ;
     private bool noPlace;
     private List<Building> buildings = new List<Building>();
     private BuildingData currentBuilding;
 
     public override void _Ready() {
-        if (!Engine.IsEditorHint()) {
-            currentBuilding = new BuildingData {
-                layer = (int)buildingList[1].Get("layer"),
-                source = (int)buildingList[1].Get("source"),
-                coords = (Vector2I)buildingList[1].Get("coords"),
-            };
+        currentBuilding = new BuildingData {
+            source = (int)buildingList[1].Get("source"),
+            coords = (Vector2I)buildingList[1].Get("coords"),
+        };
 
-            foreach (var building in GetUsedCells(1)) {
-                PlaceBuilding(building, false);
-            }
+        foreach (var building in GetUsedCells(1)) {
+            PlaceBuilding(building, false);
         }
     }
 
     public override void _Process(double delta) {
-        if (!Engine.IsEditorHint()) {
-            Vector2I newTileCoords = LocalToMap(GetLocalMousePosition());
+        Vector2I newTileCoords = LocalToMap(GetLocalMousePosition());
 
-            noPlace = false;
-            if (IsTerrainTile(newTileCoords)) {
-                if (newTileCoords != highlightPos) {
-                    UpdateGhost(newTileCoords);
-                }
-            } else {
-                noPlace = true;
-                SetCell(highlightLayer, highlightPos, -1);
+        noPlace = false;
+        if (IsTerrainTile(newTileCoords)) {
+            if (newTileCoords != highlightPos) {
+                UpdateGhost(newTileCoords);
             }
+        } else {
+            noPlace = true;
+            SetCell(1, highlightPos, -1);
+        }
 
-            if (Input.IsActionJustPressed("FlipBuilding")) {
-                flip = !flip;
-                UpdateGhost(highlightPos);
-            }
+        if (Input.IsActionJustPressed("FlipBuilding")) {
+            flip = !flip;
+            UpdateGhost(highlightPos);
+        }
 
-            if (Input.IsActionJustPressed("SecondaryInteract") && !noPlace) {
-                DemolishBuilding(highlightPos);
-            }
+        if (Input.IsActionJustPressed("SecondaryInteract") && !noPlace) {
+            DemolishBuilding(highlightPos);
+        }
 
-            if (Input.IsActionJustPressed("PrimaryInteract") && !noPlace) {
-                PlaceBuilding(highlightPos);
-            }
+        if (Input.IsActionJustPressed("PrimaryInteract") && !noPlace) {
+            PlaceBuilding(highlightPos);
         }
     }
 
@@ -74,7 +67,7 @@ public partial class BuildingHandler : TileMap {
         buildings.Add(building);
         GD.Print("Building placed!");
 
-        if (setCell) SetCell(currentBuilding.layer, highlightPos, currentBuilding.source, currentBuilding.coords, flip ? 1 : 0);
+        if (setCell) SetCell(0, highlightPos, currentBuilding.source, currentBuilding.coords, flip ? 1 : 0);
 
         return true;
     }
@@ -92,19 +85,28 @@ public partial class BuildingHandler : TileMap {
         buildings.Remove(building);
         GD.Print("Building demolished!");
 
-        SetCell(currentBuilding.layer, highlightPos, -1);
+        SetCell(0, highlightPos, -1);
 
         return true;
     }
 
     private void UpdateGhost(Vector2I coords) {
-        SetCell(highlightLayer, highlightPos, -1);
+        SetCell(1, highlightPos, -1);
         highlightPos = coords;
-        SetCell(highlightLayer, highlightPos, currentBuilding.source, currentBuilding.coords, flip ? 1 : 0);
+        SetCell(1, highlightPos, currentBuilding.source, currentBuilding.coords, flip ? 1 : 0);
+
+        SetLayerZIndex(1, highlightZ);
     }
 
     private bool IsTerrainTile(Vector2I coords) {
-        return GetCellSourceId(terrainLayer, coords) != -1;
+        for (int i = terrain.GetLayersCount() - 1; i >= 0; i--) {
+            if (terrain.GetCellSourceId(i, coords) != -1) {
+                highlightZ = i + 1; // Temporary fix (This script needs a rewrite)
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private bool IsBuilding(Vector2I coords) {
@@ -117,7 +119,6 @@ public partial class BuildingHandler : TileMap {
     }
 
     public struct BuildingData {
-        public int layer;
         public int source;
         public Vector2I coords;
     }
