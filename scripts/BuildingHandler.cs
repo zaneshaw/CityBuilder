@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public partial class BuildingHandler : TileMap {
     [Export] public TerrainGenerator terrain;
     [Export] public Godot.Collections.Array<Resource> buildingList;
+    [Export] public CameraController camera;
     [Export] public CanvasLayer canvasLayer;
     [Export] public Label scoreLabel;
 
@@ -68,11 +69,11 @@ public partial class BuildingHandler : TileMap {
                 buildings[i].timeLeft = buildings[i].buildingData.duration;
 
                 Vector2 pos = MapToLocal(buildings[i].coords) + GetViewportRect().Size / 2f;
-                pos.Y -= 30f;
+                pos.Y -= 40f;
 
                 Label label = new Label();
                 label.Name = "Score Effect";
-                label.SetPosition(pos);
+                label.SetPosition(pos - camera.Position);
                 label.Text = "+1";
                 canvasLayer.AddChild(label);
 

@@ -20,7 +20,7 @@ font_size = 32
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("1_q4qh8")
 
-[node name="TileMap" type="TileMap" parent="." node_paths=PackedStringArray("terrain", "canvasLayer", "scoreLabel")]
+[node name="TileMap" type="TileMap" parent="." node_paths=PackedStringArray("terrain", "camera", "canvasLayer", "scoreLabel")]
 y_sort_enabled = true
 texture_filter = 1
 tile_set = ExtResource("1_wh1hj")
@@ -38,6 +38,7 @@ layer_1/tile_data = PackedInt32Array()
 script = ExtResource("2_gapqt")
 terrain = NodePath("../TerrainTileMap")
 buildingList = Array[Resource]([ExtResource("3_ncn3h"), ExtResource("4_yt4s6")])
+camera = NodePath("../Camera2D")
 canvasLayer = NodePath("../CanvasLayer")
 scoreLabel = NodePath("../CanvasLayer/Label")
 
