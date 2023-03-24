@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public partial class BuildingHandler : TileMap {
     [Export] public TerrainGenerator terrain;
     [Export] public Godot.Collections.Array<Resource> buildingList;
+    [Export] public Label scoreLabel;
 
     [ExportGroup("Sources")]
     [Export(PropertyHint.Range, "0,100,")] public int highlightTileSource = 2;
@@ -15,11 +16,13 @@ public partial class BuildingHandler : TileMap {
     private bool noPlace;
     private List<Building> buildings = new List<Building>();
     private BuildingData currentBuilding;
+    private int score;
 
     public override void _Ready() {
         currentBuilding = new BuildingData {
             source = (int)buildingList[1].Get("source"),
             coords = (Vector2I)buildingList[1].Get("coords"),
+            duration = (float)buildingList[1].Get("duration"),
         };
 
         foreach (var building in GetUsedCells(1)) {
@@ -52,6 +55,21 @@ public partial class BuildingHandler : TileMap {
         if (Input.IsActionJustPressed("PrimaryInteract") && !noPlace) {
             PlaceBuilding(highlightPos);
         }
+
+        SimulateBuildings((float)delta);
+    }
+
+    private void SimulateBuildings(float delta) {
+        for (int i = 0; i < buildings.Count; i++) {
+            buildings[i].timeLeft -= delta;
+
+            if (buildings[i].timeLeft <= 0d) {
+                buildings[i].timeLeft = buildings[i].buildingData.duration;
+                
+                score++;
+            }
+        }
+        scoreLabel.Text = score.ToString();
     }
 
     /// <returns>
@@ -62,7 +80,7 @@ public partial class BuildingHandler : TileMap {
             return false;
         }
 
-        Building building = new Building { coords = coords, flipped = flip };
+        Building building = new Building { coords = coords, flipped = flip, timeLeft = currentBuilding.duration, buildingData = currentBuilding };
 
         buildings.Add(building);
         GD.Print("Building placed!");
@@ -116,10 +134,13 @@ public partial class BuildingHandler : TileMap {
     public class Building {
         public Vector2I coords;
         public bool flipped;
+        public float timeLeft;
+        public BuildingData buildingData;
     }
 
     public struct BuildingData {
         public int source;
         public Vector2I coords;
+        public float duration;
     }
 }

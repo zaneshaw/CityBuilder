@@ -4,6 +4,6 @@
 
 [resource]
 script = ExtResource("1_nj5ko")
-layer = 0
 source = 1
 coords = Vector2i(1, 0)
+duration = 3.0
