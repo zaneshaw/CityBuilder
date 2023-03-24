@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public partial class BuildingHandler : TileMap {
     [Export] public TerrainGenerator terrain;
     [Export] public Godot.Collections.Array<Resource> buildingList;
+    [Export] public CanvasLayer canvasLayer;
     [Export] public Label scoreLabel;
 
     [ExportGroup("Sources")]
@@ -65,11 +66,36 @@ public partial class BuildingHandler : TileMap {
 
             if (buildings[i].timeLeft <= 0d) {
                 buildings[i].timeLeft = buildings[i].buildingData.duration;
-                
+
+                Vector2 pos = MapToLocal(buildings[i].coords) + GetViewportRect().Size / 2f;
+                pos.Y -= 30f;
+
+                Label label = new Label();
+                label.Name = "Score Effect";
+                label.SetPosition(pos);
+                label.Text = "+1";
+                canvasLayer.AddChild(label);
+
+                animate(label);
+
                 score++;
             }
         }
         scoreLabel.Text = score.ToString();
+
+        async void animate(Label label) {
+            float distance = 250f;
+            float currentDistance = 0f;
+            float speed = 4f;
+
+            while (currentDistance <= distance) {
+                label.SetPosition(new Vector2(label.Position.X, label.Position.Y - speed));
+                currentDistance += speed;
+                await ToSignal(GetTree().CreateTimer(0.01f), "timeout");
+            }
+
+            canvasLayer.RemoveChild(label);
+        }
     }
 
     /// <returns>
@@ -83,7 +109,6 @@ public partial class BuildingHandler : TileMap {
         Building building = new Building { coords = coords, flipped = flip, timeLeft = currentBuilding.duration, buildingData = currentBuilding };
 
         buildings.Add(building);
-        GD.Print("Building placed!");
 
         if (setCell) SetCell(0, highlightPos, currentBuilding.source, currentBuilding.coords, flip ? 1 : 0);
 

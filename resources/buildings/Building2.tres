@@ -6,4 +6,4 @@
 script = ExtResource("1_f3myh")
 source = 1
 coords = Vector2i(0, 0)
-duration = 5.0
+duration = 1.0

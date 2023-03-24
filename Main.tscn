@@ -12,7 +12,7 @@ interpolation_mode = 1
 offsets = PackedFloat32Array(0, 0.185276, 0.237423, 0.700614, 0.795706)
 colors = PackedColorArray(0, 0, 0, 1, 0.0980392, 0.0980392, 0, 1, 0.2, 0.0980392, 0, 1, 0.2, 0.2, 0, 1, 0.2, 0.3, 0, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_fiyr3"]
+[sub_resource type="LabelSettings" id="LabelSettings_tqtmx"]
 font_size = 32
 
 [node name="Node2D" type="Node2D"]
@@ -20,7 +20,7 @@ font_size = 32
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("1_q4qh8")
 
-[node name="TileMap" type="TileMap" parent="." node_paths=PackedStringArray("terrain", "scoreLabel")]
+[node name="TileMap" type="TileMap" parent="." node_paths=PackedStringArray("terrain", "canvasLayer", "scoreLabel")]
 y_sort_enabled = true
 texture_filter = 1
 tile_set = ExtResource("1_wh1hj")
@@ -38,6 +38,7 @@ layer_1/tile_data = PackedInt32Array()
 script = ExtResource("2_gapqt")
 terrain = NodePath("../TerrainTileMap")
 buildingList = Array[Resource]([ExtResource("3_ncn3h"), ExtResource("4_yt4s6")])
+canvasLayer = NodePath("../CanvasLayer")
 scoreLabel = NodePath("../CanvasLayer/Label")
 
 [node name="TerrainTileMap" type="TileMap" parent="."]
@@ -92,7 +93,7 @@ lacunarity = 0.5
 
 [node name="Label" type="Label" parent="CanvasLayer"]
 offset_right = 1152.0
-offset_bottom = 26.0
+offset_bottom = 48.0
 text = "{score}"
-label_settings = SubResource("LabelSettings_fiyr3")
+label_settings = SubResource("LabelSettings_tqtmx")
 horizontal_alignment = 1
