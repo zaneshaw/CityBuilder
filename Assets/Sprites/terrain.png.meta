@@ -98,7 +98,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: terrain_0
+      name: water
       rect:
         serializedVersion: 2
         x: 0
@@ -106,7 +106,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -119,15 +119,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: terrain_1
+      name: sand
       rect:
         serializedVersion: 2
-        x: 32
+        x: 64
         y: 608
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -140,15 +140,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: terrain_2
+      name: grass
       rect:
         serializedVersion: 2
-        x: 64
+        x: 128
         y: 608
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -171,9 +171,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      terrain_0: 8765297898444631108
-      terrain_1: -315144
-      terrain_2: -984384986
+      grass: -984384986
+      sand: -315144
+      water: 8765297898444631108
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
