@@ -120,6 +120,8 @@ public class BuildingManager : MonoBehaviour {
             this.type = type;
             this.coords = coords;
             this.flipped = flipped;
+
+            this.timeLeft = type.rate;
         }
     }
 }
