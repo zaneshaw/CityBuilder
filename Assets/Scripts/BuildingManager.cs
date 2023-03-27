@@ -35,12 +35,12 @@ public class BuildingManager : MonoBehaviour {
         buildings.Add(building);
 
         Matrix4x4 tileTransform = Matrix4x4.Scale(new Vector3(flippedPlacement ? -1f : 1f, 1f, 1f));
-        TileChangeData data = new TileChangeData {
+        TileChangeData tileData = new TileChangeData {
             position = building.coords,
             tile = building.type.tile,
             transform = tileTransform,
         };
-        buildingsTilemap.SetTile(data, false);
+        buildingsTilemap.SetTile(tileData, false);
     }
 
     private void UpdateHighlight() {
@@ -50,7 +50,13 @@ public class BuildingManager : MonoBehaviour {
         Vector2 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
         cellHighlight = buildingsTilemap.WorldToCell(worldPos);
 
-        ghostTilemap.SetTile(cellHighlight, buildingPalette[0].tile);
+        Matrix4x4 tileTransform = Matrix4x4.Scale(new Vector3(flippedPlacement ? -1f : 1f, 1f, 1f));
+        TileChangeData tileData = new TileChangeData {
+            position = cellHighlight,
+            tile = buildingPalette[0].tile,
+            transform = tileTransform,
+        };
+        ghostTilemap.SetTile(tileData, false);
     }
 
     private class Building {
