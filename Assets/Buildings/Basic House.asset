@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: basichouse
   tile: {fileID: 11400000, guid: fcc15dd5d11639f4a8aad827b45b4786, type: 2}
+  rate: 0.5
