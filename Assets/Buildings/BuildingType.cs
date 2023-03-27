@@ -1,0 +1,11 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Tilemaps;
+
+[CreateAssetMenu(menuName = "CityBuilder/BuildingType")]
+public class BuildingType : ScriptableObject {
+    public string id;
+    public TileBase tile;
+    public float rate;
+}
