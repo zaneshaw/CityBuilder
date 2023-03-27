@@ -8,7 +8,7 @@ using UnityEngine.Tilemaps;
 public class TerrainGenerator : MonoBehaviour {
     [SerializeField] private Vector2Int mapSize;
 
-    [SerializeField] private Tilemap tilemap;
+    [SerializeField] public Tilemap tilemap;
     [SerializeField] private List<TileBase> tiles;
 
     [SerializeField] private Gradient gradientTest;

@@ -4,24 +4,24 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class BuildingManager : MonoBehaviour {
-    [SerializeField] private Tilemap tilemap;
+    [SerializeField] private Tilemap buildingsTilemap;
+    [SerializeField] private Tilemap ghostTilemap;
+    [SerializeField] private TerrainGenerator terrain;
     [SerializeField] private List<BuildingType> buildingPalette;
 
     private List<Building> buildings = new List<Building>();
-
     private bool flippedPlacement;
+    private Vector3Int cellHighlight;
 
     private void Update() {
-        Vector3 mousePos = Input.mousePosition;
-        Vector2 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
-        Vector3Int cellPos = tilemap.WorldToCell(worldPos);
+        UpdateHighlight();
 
         if (Input.GetKeyUp("r")) {
             flippedPlacement = !flippedPlacement;
         }
 
         if (Input.GetMouseButtonDown(0)) {
-            Building building = new Building(buildingPalette[0], cellPos);
+            Building building = new Building(buildingPalette[0], cellHighlight);
             PlaceBuilding(building);
         }
     }
@@ -40,7 +40,17 @@ public class BuildingManager : MonoBehaviour {
             tile = building.type.tile,
             transform = tileTransform,
         };
-        tilemap.SetTile(data, false);
+        buildingsTilemap.SetTile(data, false);
+    }
+
+    private void UpdateHighlight() {
+        ghostTilemap.SetTile(cellHighlight, null);
+
+        Vector3 mousePos = Input.mousePosition;
+        Vector2 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
+        cellHighlight = buildingsTilemap.WorldToCell(worldPos);
+
+        ghostTilemap.SetTile(cellHighlight, buildingPalette[0].tile);
     }
 
     private class Building {
