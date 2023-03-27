@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.Tilemaps;
 
-[ExecuteInEditMode]
 public class TerrainGenerator : MonoBehaviour {
     [SerializeField] private Vector2Int mapSize;
 
@@ -14,10 +13,6 @@ public class TerrainGenerator : MonoBehaviour {
     [SerializeField] private Gradient gradientTest;
     [SerializeField] private float scale = 1f;
     [SerializeField] private int heightScale = 2;
-
-    private void OnEnable() {
-        EditorApplication.delayCall += GenerateMap;
-    }
 
     [ContextMenu("Generate Map")]
     public void GenerateMap() {
@@ -35,8 +30,5 @@ public class TerrainGenerator : MonoBehaviour {
                 tilemap.SetTile(new Vector3Int(x, y, elevation * heightScale), tiles[spriteIndex]);
             }
         }
-
-        EditorApplication.delayCall -= GenerateMap;
-        EditorApplication.delayCall += GenerateMap;
     }
 }
