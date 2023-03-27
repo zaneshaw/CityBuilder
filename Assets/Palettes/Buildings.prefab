@@ -31,7 +31,7 @@ Transform:
   m_Children:
   - {fileID: 6199771211460275698}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!156049354 &5355384872693401746
 Grid:
@@ -102,7 +102,7 @@ Tilemap:
       serializedVersion: 2
       m_TileIndex: 1
       m_TileSpriteIndex: 1
-      m_TileMatrixIndex: 0
+      m_TileMatrixIndex: 1
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
@@ -119,25 +119,25 @@ Tilemap:
   - m_RefCount: 1
     m_Data: {fileID: 7643761922474946111, guid: e4bcb07a091afe84baf72e5c9329d5a8, type: 3}
   m_TileMatrixArray:
-  - m_RefCount: 1
+  - m_RefCount: 0
     m_Data:
-      e00: 1
-      e01: 0
-      e02: 0
+      e00: 48830.938
+      e01: 1e-45
+      e02: -8.001112e+15
       e03: 0
-      e10: 0
-      e11: 1
-      e12: 0
-      e13: 0.25
-      e20: 0
+      e10: 3e-43
+      e11: 0
+      e12: 4.5912e-41
+      e13: 0
+      e20: NaN
       e21: 0
-      e22: 1
+      e22: 48830.875
       e23: 0
       e30: 0
-      e31: 0
-      e32: 0
+      e31: 7.34684e-40
+      e32: 3e-43
       e33: 1
-  - m_RefCount: 1
+  - m_RefCount: 2
     m_Data:
       e00: 1
       e01: 0
@@ -146,7 +146,7 @@ Tilemap:
       e10: 0
       e11: 1
       e12: 0
-      e13: 0.24
+      e13: 0
       e20: 0
       e21: 0
       e22: 1
@@ -231,7 +231,7 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
---- !u!114 &7511506260867207869
+--- !u!114 &8947489830227050488
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
