@@ -9,9 +9,21 @@ public class BuildingManager : MonoBehaviour {
 
     private List<Building> buildings = new List<Building>();
 
-    private void Start() {
-        Building building = new Building(buildingPalette[0], new Vector3Int(0, 0, 0));
-        PlaceBuilding(building);
+    private bool flippedPlacement;
+
+    private void Update() {
+        Vector3 mousePos = Input.mousePosition;
+        Vector2 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
+        Vector3Int cellPos = tilemap.WorldToCell(worldPos);
+
+        if (Input.GetKeyUp("r")) {
+            flippedPlacement = !flippedPlacement;
+        }
+
+        if (Input.GetMouseButtonDown(0)) {
+            Building building = new Building(buildingPalette[0], cellPos);
+            PlaceBuilding(building);
+        }
     }
 
     private void PlaceBuilding(Building building) {
@@ -22,7 +34,13 @@ public class BuildingManager : MonoBehaviour {
 
         buildings.Add(building);
 
-        tilemap.SetTile(building.coords, building.type.tile);
+        Matrix4x4 tileTransform = Matrix4x4.Scale(new Vector3(flippedPlacement ? -1f : 1f, 1f, 1f));
+        TileChangeData data = new TileChangeData {
+            position = building.coords,
+            tile = building.type.tile,
+            transform = tileTransform,
+        };
+        tilemap.SetTile(data, false);
     }
 
     private class Building {
