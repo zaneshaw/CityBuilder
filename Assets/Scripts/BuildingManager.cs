@@ -27,7 +27,7 @@ public class BuildingManager : MonoBehaviour {
         }
 
         if (Input.GetMouseButtonDown(0)) {
-            Building building = new Building(buildingPalette[0], cellHighlight);
+            Building building = new Building(buildingPalette[0], cellHighlight, flippedPlacement);
             PlaceBuilding(building);
         }
 
@@ -85,7 +85,7 @@ public class BuildingManager : MonoBehaviour {
 
         buildings.Add(building);
 
-        Matrix4x4 tileTransform = Matrix4x4.Scale(new Vector3(flippedPlacement ? -1f : 1f, 1f, 1f));
+        Matrix4x4 tileTransform = Matrix4x4.Scale(new Vector3(building.flipped ? -1f : 1f, 1f, 1f));
         TileChangeData tileData = new TileChangeData {
             position = building.coords,
             tile = building.type.tile,
@@ -113,11 +113,13 @@ public class BuildingManager : MonoBehaviour {
     private class Building {
         public BuildingType type;
         public Vector3Int coords;
+        public bool flipped;
         public float timeLeft;
 
-        public Building(BuildingType type, Vector3Int coords) {
+        public Building(BuildingType type, Vector3Int coords, bool flipped = false) {
             this.type = type;
             this.coords = coords;
+            this.flipped = flipped;
         }
     }
 }
