@@ -37,6 +37,10 @@ public class BuildingManager : MonoBehaviour {
             PlaceBuilding(building);
         }
 
+        if (controls.Default.SecondaryInteract.triggered) {
+            DemolishBuilding(cellHighlight);
+        }
+
         SimulateBuildings();
     }
 
@@ -84,7 +88,7 @@ public class BuildingManager : MonoBehaviour {
     }
 
     private void PlaceBuilding(Building building) {
-        if (buildings.Exists(_building => _building.coords == building.coords)) {
+        if (buildings.Exists(b => b.coords == building.coords)) {
             Debug.Log("Slot is already occupied!");
             return;
         }
@@ -98,6 +102,18 @@ public class BuildingManager : MonoBehaviour {
             transform = tileTransform,
         };
         buildingsTilemap.SetTile(tileData, false);
+    }
+
+    private void DemolishBuilding(Vector3Int coords) {
+        System.Predicate<Building> buildingCoords = b => b.coords == coords;
+
+        if (!buildings.Exists(buildingCoords)) {
+            Debug.Log("Building doesn't exist!");
+            return;
+        }
+
+        buildings.Remove(buildings.Find(buildingCoords));
+        buildingsTilemap.SetTile(coords, null);
     }
 
     private void UpdateHighlight() {

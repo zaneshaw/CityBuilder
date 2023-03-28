@@ -24,6 +24,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "SecondaryInteract",
+                    "type": "Value",
+                    "id": "9f23376e-a1a7-48f9-b019-2fee414c3b61",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "FlipSelection",
                     "type": "Value",
                     "id": "01cf067c-8b40-404c-89c7-e25008cb950b",
@@ -104,6 +113,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "828119a2-498d-4cc3-9bfe-d456e1f4ad7d",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SecondaryInteract",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

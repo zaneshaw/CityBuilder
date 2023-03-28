@@ -46,6 +46,15 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
+                    ""name"": ""SecondaryInteract"",
+                    ""type"": ""Value"",
+                    ""id"": ""9f23376e-a1a7-48f9-b019-2fee414c3b61"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
                     ""name"": ""FlipSelection"",
                     ""type"": ""Value"",
                     ""id"": ""01cf067c-8b40-404c-89c7-e25008cb950b"",
@@ -128,6 +137,17 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
                     ""action"": ""Zoom"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""828119a2-498d-4cc3-9bfe-d456e1f4ad7d"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SecondaryInteract"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -138,6 +158,7 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
         m_Default = asset.FindActionMap("Default", throwIfNotFound: true);
         m_Default_MousePosition = m_Default.FindAction("MousePosition", throwIfNotFound: true);
         m_Default_PrimaryInteract = m_Default.FindAction("PrimaryInteract", throwIfNotFound: true);
+        m_Default_SecondaryInteract = m_Default.FindAction("SecondaryInteract", throwIfNotFound: true);
         m_Default_FlipSelection = m_Default.FindAction("FlipSelection", throwIfNotFound: true);
         m_Default_Pan = m_Default.FindAction("Pan", throwIfNotFound: true);
         m_Default_Zoom = m_Default.FindAction("Zoom", throwIfNotFound: true);
@@ -204,6 +225,7 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
     private List<IDefaultActions> m_DefaultActionsCallbackInterfaces = new List<IDefaultActions>();
     private readonly InputAction m_Default_MousePosition;
     private readonly InputAction m_Default_PrimaryInteract;
+    private readonly InputAction m_Default_SecondaryInteract;
     private readonly InputAction m_Default_FlipSelection;
     private readonly InputAction m_Default_Pan;
     private readonly InputAction m_Default_Zoom;
@@ -213,6 +235,7 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
         public DefaultActions(@InputMain wrapper) { m_Wrapper = wrapper; }
         public InputAction @MousePosition => m_Wrapper.m_Default_MousePosition;
         public InputAction @PrimaryInteract => m_Wrapper.m_Default_PrimaryInteract;
+        public InputAction @SecondaryInteract => m_Wrapper.m_Default_SecondaryInteract;
         public InputAction @FlipSelection => m_Wrapper.m_Default_FlipSelection;
         public InputAction @Pan => m_Wrapper.m_Default_Pan;
         public InputAction @Zoom => m_Wrapper.m_Default_Zoom;
@@ -231,6 +254,9 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
             @PrimaryInteract.started += instance.OnPrimaryInteract;
             @PrimaryInteract.performed += instance.OnPrimaryInteract;
             @PrimaryInteract.canceled += instance.OnPrimaryInteract;
+            @SecondaryInteract.started += instance.OnSecondaryInteract;
+            @SecondaryInteract.performed += instance.OnSecondaryInteract;
+            @SecondaryInteract.canceled += instance.OnSecondaryInteract;
             @FlipSelection.started += instance.OnFlipSelection;
             @FlipSelection.performed += instance.OnFlipSelection;
             @FlipSelection.canceled += instance.OnFlipSelection;
@@ -250,6 +276,9 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
             @PrimaryInteract.started -= instance.OnPrimaryInteract;
             @PrimaryInteract.performed -= instance.OnPrimaryInteract;
             @PrimaryInteract.canceled -= instance.OnPrimaryInteract;
+            @SecondaryInteract.started -= instance.OnSecondaryInteract;
+            @SecondaryInteract.performed -= instance.OnSecondaryInteract;
+            @SecondaryInteract.canceled -= instance.OnSecondaryInteract;
             @FlipSelection.started -= instance.OnFlipSelection;
             @FlipSelection.performed -= instance.OnFlipSelection;
             @FlipSelection.canceled -= instance.OnFlipSelection;
@@ -280,6 +309,7 @@ public partial class @InputMain: IInputActionCollection2, IDisposable
     {
         void OnMousePosition(InputAction.CallbackContext context);
         void OnPrimaryInteract(InputAction.CallbackContext context);
+        void OnSecondaryInteract(InputAction.CallbackContext context);
         void OnFlipSelection(InputAction.CallbackContext context);
         void OnPan(InputAction.CallbackContext context);
         void OnZoom(InputAction.CallbackContext context);
