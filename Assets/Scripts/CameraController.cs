@@ -8,9 +8,15 @@ public class CameraController : MonoBehaviour {
     private Vector3 panOrigin;
     private bool panning;
 
+    public InputMain controls;
+
+    private void Awake() {
+        controls = new InputMain();
+    }
+
     private void Update() {
-        if (Input.GetMouseButton(2)) {
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if (controls.Default.Pan.ReadValue<float>() == 1f) {
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(controls.Default.MousePosition.ReadValue<Vector2>());
             Vector3 mouseDelta = mousePosition - transform.position;
 
             if (!panning) {
@@ -23,8 +29,16 @@ public class CameraController : MonoBehaviour {
             panning = false;
         }
 
-        if (Input.GetAxisRaw("Mouse ScrollWheel") != 0) {
-            Camera.main.orthographicSize -= Input.mouseScrollDelta.y * zoomSpeed;
+        if (controls.Default.Zoom.ReadValue<Vector2>() != Vector2.zero) {
+            Camera.main.orthographicSize -= controls.Default.Zoom.ReadValue<Vector2>().y * zoomSpeed;
         }
+    }
+
+    private void OnEnable() {
+        controls.Enable();
+    }
+
+    private void OnDisable() {
+        controls.Disable();
     }
 }

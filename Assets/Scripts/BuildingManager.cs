@@ -19,14 +19,20 @@ public class BuildingManager : MonoBehaviour {
     private Vector3Int cellHighlight;
     private int score;
 
+    public InputMain controls;
+
+    private void Awake() {
+        controls = new InputMain();
+    }
+
     private void Update() {
         UpdateHighlight();
 
-        if (Input.GetKeyUp("r")) {
+        if (controls.Default.FlipSelection.triggered) {
             flippedPlacement = !flippedPlacement;
         }
 
-        if (Input.GetMouseButtonDown(0)) {
+        if (controls.Default.PrimaryInteract.triggered) {
             Building building = new Building(buildingPalette[0], cellHighlight, flippedPlacement);
             PlaceBuilding(building);
         }
@@ -97,7 +103,7 @@ public class BuildingManager : MonoBehaviour {
     private void UpdateHighlight() {
         ghostTilemap.SetTile(cellHighlight, null);
 
-        Vector3 mousePos = Input.mousePosition;
+        Vector2 mousePos = controls.Default.MousePosition.ReadValue<Vector2>();
         Vector2 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
         cellHighlight = buildingsTilemap.WorldToCell(worldPos);
 
@@ -123,5 +129,13 @@ public class BuildingManager : MonoBehaviour {
 
             this.timeLeft = type.rate;
         }
+    }
+
+    private void OnEnable() {
+        controls.Enable();
+    }
+
+    private void OnDisable() {
+        controls.Disable();
     }
 }
