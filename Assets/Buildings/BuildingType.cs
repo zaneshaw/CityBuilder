@@ -6,6 +6,6 @@ using UnityEngine.Tilemaps;
 [CreateAssetMenu(menuName = "CityBuilder/BuildingType")]
 public class BuildingType : ScriptableObject {
     public string id;
-    public TileBase tile;
+    public Tile tile;
     public float rate;
 }

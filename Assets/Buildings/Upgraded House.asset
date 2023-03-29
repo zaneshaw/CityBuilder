@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 148c1c6147cce06459ee3f099742dc97, type: 3}
-  m_Name: Basic House
+  m_Name: Upgraded House
   m_EditorClassIdentifier: 
-  id: basichouse
-  tile: {fileID: 11400000, guid: fcc15dd5d11639f4a8aad827b45b4786, type: 2}
-  rate: 1
+  id: upgradedhouse
+  tile: {fileID: 11400000, guid: 14e4125de11cda14faffc9371bf46054, type: 2}
+  rate: 0.7

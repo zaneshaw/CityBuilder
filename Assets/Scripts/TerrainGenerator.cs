@@ -8,7 +8,7 @@ public class TerrainGenerator : MonoBehaviour {
     [SerializeField] private Vector2Int mapSize;
 
     [SerializeField] public Tilemap tilemap;
-    [SerializeField] private List<TileBase> tiles;
+    [SerializeField] private List<Tile> tiles;
 
     [SerializeField] private Gradient gradientTest;
     [SerializeField] private float scale = 1f;

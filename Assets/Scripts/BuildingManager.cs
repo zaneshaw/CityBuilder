@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 using TMPro;
 
 public class BuildingManager : MonoBehaviour {
@@ -11,10 +13,13 @@ public class BuildingManager : MonoBehaviour {
     [SerializeField] private Tilemap ghostTilemap;
     [SerializeField] private TerrainGenerator terrain;
     [SerializeField] private List<BuildingType> buildingPalette;
+    [SerializeField] private RectTransform buildingPaletteUI;
+    [SerializeField] private GameObject buildingTypeButton;
 
     [SerializeField] private TMP_Text scoreText;
 
     private List<Building> buildings = new List<Building>();
+    private BuildingType currentBuilding;
     private bool flippedPlacement;
     private Vector3Int cellHighlight;
     private int score;
@@ -25,20 +30,35 @@ public class BuildingManager : MonoBehaviour {
         controls = new InputMain();
     }
 
+    private void Start() {
+        currentBuilding = buildingPalette?[0];
+
+        foreach (BuildingType building in buildingPalette) {
+            GameObject go = Instantiate(buildingTypeButton, buildingPaletteUI);
+            go.GetComponent<Button>().onClick.AddListener(() => currentBuilding = building);
+
+            Transform child = go.transform.GetChild(0);
+            child.GetComponent<Image>().sprite = building.tile.sprite;
+        }
+    }
+
     private void Update() {
-        UpdateHighlight();
+        bool hoveringUI = EventSystem.current.IsPointerOverGameObject();
+        UpdateHighlight(hoveringUI);
 
-        if (controls.Default.FlipSelection.triggered) {
-            flippedPlacement = !flippedPlacement;
-        }
+        if (!hoveringUI) {
+            if (controls.Default.FlipSelection.triggered) {
+                flippedPlacement = !flippedPlacement;
+            }
 
-        if (controls.Default.PrimaryInteract.triggered) {
-            Building building = new Building(buildingPalette[0], cellHighlight, flippedPlacement);
-            PlaceBuilding(building);
-        }
+            if (controls.Default.PrimaryInteract.triggered) {
+                Building building = new Building(currentBuilding, cellHighlight, flippedPlacement);
+                PlaceBuilding(building);
+            }
 
-        if (controls.Default.SecondaryInteract.triggered) {
-            DemolishBuilding(cellHighlight);
+            if (controls.Default.SecondaryInteract.triggered) {
+                DemolishBuilding(cellHighlight);
+            }
         }
 
         SimulateBuildings();
@@ -116,9 +136,11 @@ public class BuildingManager : MonoBehaviour {
         buildingsTilemap.SetTile(coords, null);
     }
 
-    private void UpdateHighlight() {
+    private void UpdateHighlight(bool removeHighlight = false) {
         ghostTilemap.SetTile(cellHighlight, null);
 
+        if (removeHighlight) return;
+        
         Vector2 mousePos = controls.Default.MousePosition.ReadValue<Vector2>();
         Vector2 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
         cellHighlight = buildingsTilemap.WorldToCell(worldPos);
@@ -126,7 +148,7 @@ public class BuildingManager : MonoBehaviour {
         Matrix4x4 tileTransform = Matrix4x4.Scale(new Vector3(flippedPlacement ? -1f : 1f, 1f, 1f));
         TileChangeData tileData = new TileChangeData {
             position = cellHighlight,
-            tile = buildingPalette[0].tile,
+            tile = currentBuilding.tile,
             transform = tileTransform,
         };
         ghostTilemap.SetTile(tileData, false);
