@@ -110,7 +110,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: buildings_0
+      name: Basic Building
       rect:
         serializedVersion: 2
         x: 0
@@ -131,7 +131,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: buildings_1
+      name: Upgraded Building
       rect:
         serializedVersion: 2
         x: 32
@@ -162,8 +162,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      buildings_0: 1168926902407322946
-      buildings_1: 7643761922474946111
+      Basic Building: 1168926902407322946
+      Upgraded Building: 7643761922474946111
       buildings_2: -5308527982003062785
       buildings_3: -8922806545422484088
       buildings_4: -7916908332688520428

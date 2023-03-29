@@ -98,7 +98,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: water
+      name: Water
       rect:
         serializedVersion: 2
         x: 0
@@ -119,7 +119,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sand
+      name: Sand
       rect:
         serializedVersion: 2
         x: 64
@@ -140,7 +140,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: grass
+      name: Grass
       rect:
         serializedVersion: 2
         x: 128
@@ -171,9 +171,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      grass: -984384986
-      sand: -315144
-      water: 8765297898444631108
+      Grass: -984384986
+      Sand: -315144
+      Water: 8765297898444631108
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
