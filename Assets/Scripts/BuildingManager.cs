@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using TMPro;
 
 public class BuildingManager : MonoBehaviour {
+    [SerializeField] private GameManager gameManager;
     [SerializeField] private Canvas canvas;
     [SerializeField] private Tilemap buildingsTilemap;
     [SerializeField] private Tilemap ghostTilemap;
@@ -34,11 +35,11 @@ public class BuildingManager : MonoBehaviour {
         currentBuilding = buildingPalette?[0];
 
         foreach (BuildingType building in buildingPalette) {
-            GameObject go = Instantiate(buildingTypeButton, buildingPaletteUI);
-            go.GetComponent<Button>().onClick.AddListener(() => currentBuilding = building);
-
-            Transform child = go.transform.GetChild(0);
-            child.GetComponent<Image>().sprite = building.tile.sprite;
+            Transform buttonTransform = Instantiate(buildingTypeButton, buildingPaletteUI).transform;
+            
+            buttonTransform.GetComponent<Button>().onClick.AddListener(() => currentBuilding = building);
+            buttonTransform.transform.Find("sprite").GetComponent<Image>().sprite = building.tile.sprite;
+            buttonTransform.transform.Find("price").GetComponent<TMP_Text>().text = $"${building.price}";
         }
     }
 
@@ -110,6 +111,9 @@ public class BuildingManager : MonoBehaviour {
     private void PlaceBuilding(Building building) {
         if (buildings.Exists(b => b.coords == building.coords)) {
             Debug.Log("Slot is already occupied!");
+            return;
+        } else if (!gameManager.SubtractMoney(building.type.price)) {
+            Debug.Log("Cannot afford building type!");
             return;
         }
 

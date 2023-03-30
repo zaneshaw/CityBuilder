@@ -7,5 +7,6 @@ using UnityEngine.Tilemaps;
 public class BuildingType : ScriptableObject {
     public string id;
     public Tile tile;
+    public int price;
     public float rate;
 }

@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: upgradedhouse
   tile: {fileID: 11400000, guid: 14e4125de11cda14faffc9371bf46054, type: 2}
+  price: 50
   rate: 0.7
