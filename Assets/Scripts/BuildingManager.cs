@@ -36,7 +36,7 @@ public class BuildingManager : MonoBehaviour {
 
         foreach (BuildingType building in buildingPalette) {
             Transform buttonTransform = Instantiate(buildingTypeButton, buildingPaletteUI).transform;
-            
+
             buttonTransform.GetComponent<Button>().onClick.AddListener(() => currentBuilding = building);
             buttonTransform.transform.Find("sprite").GetComponent<Image>().sprite = building.tile.sprite;
             buttonTransform.transform.Find("price").GetComponent<TMP_Text>().text = $"${building.price}";
@@ -70,7 +70,7 @@ public class BuildingManager : MonoBehaviour {
             building.timeLeft -= Time.deltaTime;
 
             if (building.timeLeft <= 0f) {
-                building.timeLeft = building.type.rate;
+                building.timeLeft = 1f / building.type.rate;
 
                 Vector2 pos = Camera.main.WorldToScreenPoint(buildingsTilemap.CellToWorld(building.coords));
 
@@ -144,7 +144,7 @@ public class BuildingManager : MonoBehaviour {
         ghostTilemap.SetTile(cellHighlight, null);
 
         if (removeHighlight) return;
-        
+
         Vector2 mousePos = controls.Default.MousePosition.ReadValue<Vector2>();
         Vector2 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
         cellHighlight = buildingsTilemap.WorldToCell(worldPos);
