@@ -11,6 +11,7 @@ public class TerrainGenerator : MonoBehaviour {
     [SerializeField] private List<Tile> tiles;
 
     [SerializeField] private Gradient gradientTest;
+    [SerializeField, Min(0)] private int offset;
     [SerializeField] private float scale = 1f;
     [SerializeField] private int heightScale = 2;
 
@@ -20,9 +21,9 @@ public class TerrainGenerator : MonoBehaviour {
 
         for (int y = 0 - mapSize.y / 2; y < mapSize.y / 2f; y++) {
             for (int x = 0 - mapSize.x / 2; x < mapSize.x / 2f; x++) {
-                float xV2 = x + mapSize.x / 2f;
-                float yV2 = y + mapSize.y / 2f;
-                float noiseValue = Mathf.PerlinNoise(0f + (float)xV2 / mapSize.x * scale, 0f + (float)yV2 / mapSize.y * scale);
+                float adjX = ((x + offset) + mapSize.x / 2f) / scale;
+                float adjY = ((y + offset) + mapSize.y / 2f) / scale;
+                float noiseValue = Mathf.PerlinNoise(adjX, adjY);
 
                 int spriteIndex = Mathf.RoundToInt((gradientTest.Evaluate(noiseValue).r * 255f) / 10f);
                 int elevation = Mathf.RoundToInt((gradientTest.Evaluate(noiseValue).g * 255f) / 10f);
