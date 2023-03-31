@@ -17,13 +17,10 @@ public class BuildingManager : MonoBehaviour {
     [SerializeField] private RectTransform buildingPaletteUI;
     [SerializeField] private GameObject buildingTypeButton;
 
-    [SerializeField] private TMP_Text scoreText;
-
     private List<Building> buildings = new List<Building>();
     private BuildingType currentBuilding;
     private bool flippedPlacement;
     private Vector3Int cellHighlight;
-    private int score;
 
     public InputMain controls;
 
@@ -74,7 +71,7 @@ public class BuildingManager : MonoBehaviour {
 
                 Vector2 pos = Camera.main.WorldToScreenPoint(buildingsTilemap.CellToWorld(building.coords));
 
-                GameObject label = new GameObject("score +1");
+                GameObject label = new GameObject("+1 text");
                 label.transform.SetParent(canvas.transform);
                 label.transform.position = pos + Vector2.up * 16f;
 
@@ -85,11 +82,9 @@ public class BuildingManager : MonoBehaviour {
 
                 Animate(label.transform);
 
-                score++;
+                gameManager.AdjustBalance(1);
             }
         }
-
-        scoreText.text = score.ToString();
 
         async void Animate(Transform label) {
             float distance = 250f;
@@ -112,7 +107,7 @@ public class BuildingManager : MonoBehaviour {
         if (buildings.Exists(b => b.coords == building.coords)) {
             Debug.Log("Slot is already occupied!");
             return;
-        } else if (!gameManager.SubtractMoney(building.type.price)) {
+        } else if (!gameManager.AdjustBalance(-building.type.price)) {
             Debug.Log("Cannot afford building type!");
             return;
         }

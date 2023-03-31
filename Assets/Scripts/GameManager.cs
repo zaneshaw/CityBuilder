@@ -14,20 +14,17 @@ public class GameManager : MonoBehaviour {
         balanceText.text = $"${balance}";
     }
 
-    public void AddMoney(int change) {
-        balance += Mathf.Abs(change);
-        balanceText.text = $"${balance}";
-    }
-
-    public bool SubtractMoney(int change) {
-        change = Mathf.Abs(change);
-        if (balance - change < 0) {
+    /// <returns>
+    /// If the adjustment was successful
+    /// </returns>
+    public bool AdjustBalance(int adjustment) {
+        if (balance + adjustment < 0) {
             return false;
         } else {
-            balance -= change;
+            balance += adjustment;
         }
-        balanceText.text = $"${balance}";
 
+        balanceText.text = $"${balance}";
         return true;
     }
 }
